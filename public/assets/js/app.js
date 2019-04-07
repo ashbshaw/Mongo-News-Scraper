@@ -16,8 +16,9 @@ $(document).on("click", "#scrape", function () {
         url: "/scrape"
     })
     // Then refresh page to show scraped articles from the database
-    // THERE IS A PROBLEM WITH THIS...
-    .then.window.location = "/";
+    .then(function(){
+        window.location = "/";
+    });
 });
 
 // On click id to clear articles
@@ -28,7 +29,9 @@ $(document).on("click", "#clear", function () {
         url: "/api/clear"
     })
         // Then refresh page to show it clear/empty
-        .then.window.location = "/";
+        .then(function(){
+            window.location = "/";
+        });
 });
 
 // On click class to save articles
@@ -38,10 +41,59 @@ $(document).on("click", ".save-article", function () {
     // AJAX call: AJAX "route", {type: "put", data: articleID (this is a variable)}
     $.ajax({
         method: "PUT",
-        url: "api/save" + thisID
+        url: "/api/save/" + thisID
     })
         // The refresh the page to show the change
-        .then.window.location = "/";
+        .then(function(){
+            window.location = "/";
+        });
+});
+
+// On click id to clear articles
+$(document).on("click", ".delete-article", function () {
+    var thisID = $(this).attr("data-id");
+    // AJAX call to clear articles
+    $.ajax({
+        method: "PUT",
+        url: "/api/delete/" + thisID
+    })
+        // Then refresh page to show it clear/empty
+        .then(function(){
+            window.location = "/saved";
+        });
+});
+
+// Get notes to display on modal
+$(document).on("click", ".add-note", function () {
+    var thisID = $(this).attr("data-id");
+    $("#note-id").attr("data-id", thisID);
+    // AJAX call for scraped articles
+    $.ajax({
+        method: "GET",
+        // Return scraped articles, and these will go in database
+        url: "/api/notes/" + thisID
+    })
+    // Then refresh page to show scraped articles from the database
+    .then(function(){
+        $("#note-modal").modal("show");
+    });
+});
+
+// Save notes to display on modal
+$(document).on("click", ".save-note", function () {
+    var thisID = $("#note-id").attr("data-id");
+
+    // AJAX call for scraped articles
+    $.ajax({
+        method: "POST",
+        // Return scraped articles, and these will go in database
+        url: "/api/note/" + thisID, 
+        data: {body: $("textarea").val()}
+    })
+    // Then refresh page to show scraped articles from the database
+    .then(function(){
+        $("textarea").val("");
+    });
 });
 
 

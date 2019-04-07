@@ -1,7 +1,9 @@
 var express = require("express");
+// var bodyParser = require("body-parser");
 var logger = require("morgan");
 var mongoose = require("mongoose");
 var exphbs = require("express-handlebars");
+// var path = require("path");
 
 // Our scraping tools
 // Axios is a promised-based http library, similar to jQuery's Ajax method
@@ -11,7 +13,6 @@ var cheerio = require("cheerio");
 
 // Require all models
 var db = require("./models");
-
 var PORT = 3000;
 
 // Initialize Express
@@ -27,16 +28,16 @@ app.use(express.json());
 // Make public a static folder
 app.use(express.static("public"));
 
+// Set engine and default for handlebars
+app.engine("handlebars", exphbs({ defaultLayout: "main" }));
+// partialsDir: path.join(_dirname, "/views/layouts/partials")
+app.set("view engine", "handlebars");
 
 // Connect to the Mongo DB
 // To test, drop database before testing - change database name
 // Go to Robo, right click on database name and drop
 var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoNPR";
 mongoose.connect(MONGODB_URI);
-
-// Set engine and default for handlebars
-app.engine("handlebars", exphbs({ defaultLayout: "main" }));
-app.set("view engine", "handlebars");
 
 // Add routes file
 
@@ -69,7 +70,7 @@ app.get("/scrape", function (req, res) {
       var result = {};
       // Add the text and href of every link, and save them as properties of the result object
       result.title = $(this).find("h3").text();
-      result.link = $(this).find(".a").attr("href");
+      result.link = $(this).find("a").attr("href");
 
       // Create a new Article using the `result` object built from scraping
       db.Article.create(result)
@@ -89,9 +90,10 @@ app.get("/scrape", function (req, res) {
 });
 
 // Route for saving an article
-app.put("api/save", function (req, res) {
+app.put("/api/save/:id", function (req, res) {
+  console.log("hello", req.params.id);
   // Makes a call to the database
-  db.Article.updateOne({ _id: dataID }), { "$set": { "saved": true } }
+  db.Article.updateOne({ _id: req.params.id }, { "$set": { "saved": true } })
     // Sends to the database to make a change
     .then(function (dbArticle) {
       // Sends update back to the client
@@ -122,7 +124,7 @@ app.get("/saved", function (req, res) {
   db.Article.find({ saved: true })
     .then(function (dbArticle) {
       // If we were able to successfully find Articles, send them back to the client
-      res.render("index", { articles: dbArticle });
+      res.render("saved", { articles: dbArticle });
     })
     .catch(function (err) {
       // If an error occurred, send it to the client
@@ -131,7 +133,7 @@ app.get("/saved", function (req, res) {
 });
 
 // Route for deleting/clearing the articles
-app.delete("api/clear", function (req, res) {
+app.delete("/api/clear", function (req, res) {
   // Delete/clear all of the articles
   db.Article.deleteMany({})
     .then(function (dbArticle) {
@@ -144,7 +146,7 @@ app.delete("api/clear", function (req, res) {
     });
 });
 
-// Route for grabbing a specific Article by id, populate it with it's note
+// Route for grabbing a specific Article by id, populate it with its note
 app.get("/articles/:id", function (req, res) {
   // Using the id passed in the id parameter, prepare a query that finds the matching one in our db...
   db.Article.findOne({ _id: req.params.id })
@@ -153,6 +155,58 @@ app.get("/articles/:id", function (req, res) {
     .then(function (dbArticle) {
       // If we were able to successfully find an Article with the given id, send it back to the client
       res.json(dbArticle);
+    })
+    .catch(function (err) {
+      // If an error occurred, send it to the client
+      res.json(err);
+    });
+});
+
+// Delete a saved article
+app.put("/api/delete/:id", function (req, res) {
+  // Makes a call to the database
+  db.Article.updateOne({ _id: req.params.id }, { "$set": { "saved": false } })
+    // Sends to the database to make a change
+    .then(function (dbArticle) {
+      // Sends update back to the client
+      res.json(dbArticle);
+    })
+    .catch(function (err) {
+      // If an error occurred, send it to the client
+      res.json(err);
+    });
+});
+
+// Route for adding a note
+app.get("/api/notes/:id", function (req, res) {
+  console.log("testing notes")
+  // Makes a call to the database
+  db.Article.find({ _id: req.params.id })
+  .populate("note")
+    // Sends to the database to make a change
+    .then(function (dbNote) {
+      console.log("notes", dbNote)
+      // Sends update back to the client
+      res.json(dbNote);
+    })
+    .catch(function (err) {
+      // If an error occurred, send it to the client
+      res.json(err);
+    });
+});
+
+// Route for adding a note
+app.post("/api/note/:id", function (req, res) {
+  // Makes a call to the database
+  db.Note.create(req.body)
+    // Sends to the database to make a change
+    .then(function (dbNote) {
+      // Sends update back to the client
+      return db.Article.findOneAndUpdate({ _id: req.params.id }, { $push: { note: dbNote._id }}, { new: true});
+    })
+    // Sends to front end to end the request
+    .then(function(dbArticle){
+      res.json("saved note");
     })
     .catch(function (err) {
       // If an error occurred, send it to the client
