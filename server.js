@@ -1,9 +1,7 @@
 var express = require("express");
-// var bodyParser = require("body-parser");
 var logger = require("morgan");
 var mongoose = require("mongoose");
 var exphbs = require("express-handlebars");
-// var path = require("path");
 
 // Our scraping tools
 // Axios is a promised-based http library, similar to jQuery's Ajax method
