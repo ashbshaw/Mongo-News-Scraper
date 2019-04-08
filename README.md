@@ -54,15 +54,15 @@ Here is an explanation of the application's functionality:
 
 ## **Screenshots**
 
-![Home](/public/assets/images/mongo-newsscraper.png)
+![Home](/assets/images/mongo-newsscraper.png)
 
 Save an article and view it on the "Saved Articles" page. From here, the user may either add a note to the saved article or delete it from the Saved Article page.
 
-![Saved](/public/assets/images/saved.png)
+![Saved](/assets/images/saved.png)
 
 The user may add a note about the article as well.
 
-![Note](/public/assets/images/note.png)
+![Note](/assets/images/note.png)
 
 **Thank you for visiting my NPR Mongo News Scraper Project!**
 
