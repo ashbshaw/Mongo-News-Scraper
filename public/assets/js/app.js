@@ -38,7 +38,7 @@ $(document).on("click", "#clear", function () {
 $(document).on("click", ".save-article", function () {
     // Get article ID using data-id from index handlebars
     var thisID = $(this).attr("data-id");
-    // AJAX call: AJAX "route", {type: "put", data: articleID (this is a variable)}
+    // AJAX call to save articles
     $.ajax({
         method: "PUT",
         url: "/api/save/" + thisID
@@ -67,13 +67,13 @@ $(document).on("click", ".delete-article", function () {
 $(document).on("click", ".add-note", function () {
     var thisID = $(this).attr("data-id");
     $("#note-id").attr("data-id", thisID);
-    // AJAX call for scraped articles
+    // AJAX call for notes
     $.ajax({
         method: "GET",
-        // Return scraped articles, and these will go in database
+        // Return notes
         url: "/api/notes/" + thisID
     })
-    // Then refresh page to show scraped articles from the database
+    // Then refresh page 
     .then(function(){
         $("#note-modal").modal("show");
     });
@@ -82,8 +82,7 @@ $(document).on("click", ".add-note", function () {
 // Save notes to display on modal
 $(document).on("click", ".save-note", function () {
     var thisID = $("#note-id").attr("data-id");
-
-    // AJAX call for scraped articles
+    // AJAX call to post note
     $.ajax({
         method: "POST",
         // Return scraped articles, and these will go in database

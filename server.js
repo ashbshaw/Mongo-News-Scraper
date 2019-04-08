@@ -177,7 +177,7 @@ app.put("/api/delete/:id", function (req, res) {
     });
 });
 
-// Route for adding a note
+// Route for accessing the note modal
 app.get("/api/notes/:id", function (req, res) {
   console.log("testing notes")
   // Makes a call to the database
@@ -195,7 +195,7 @@ app.get("/api/notes/:id", function (req, res) {
     });
 });
 
-// Route for adding a note
+// Route for adding a note within the notes modal
 app.post("/api/note/:id", function (req, res) {
   // Makes a call to the database
   db.Note.create(req.body)
