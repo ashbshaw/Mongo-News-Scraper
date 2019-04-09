@@ -228,6 +228,6 @@ app.post("/api/note/:id", function (req, res) {
 //   console.log("App is running on port " + port);
 // });
 // Start the server
-server.listen(PORT, function () {
+app.listen(process.env.PORT, function () {
   console.log("App running on port " + PORT + "!");
 });
