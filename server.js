@@ -1,11 +1,11 @@
 var express = require("express");
+var bodyParser = require("body-parser");
 var logger = require("morgan");
 var mongoose = require("mongoose");
 var exphbs = require("express-handlebars");
+var path = require("path");
 
 // Our scraping tools
-// Axios is a promised-based http library, similar to jQuery's Ajax method
-// It works on the client and on the server
 var axios = require("axios");
 var cheerio = require("cheerio");
 
@@ -20,24 +20,35 @@ var app = express();
 
 // Use morgan logger for logging requests
 app.use(logger("dev"));
-// Parse request body as JSON
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+app.use(bodyParser.urlencoded({
+  extended: false
+}));
+
 // Make public a static folder
 app.use(express.static("public"));
 
-// Set engine and default for handlebars
-app.engine("handlebars", exphbs({ defaultLayout: "main" }));
-// partialsDir: path.join(_dirname, "/views/layouts/partials")
+app.engine("handlebars", exphbs({
+  defaultLayout: "main",
+  partialsDir: path.join(__dirname, "/views/partials")
+}));
 app.set("view engine", "handlebars");
 
 // Connect to the Mongo DB
-// To test, drop database before testing - change database name
-// Go to Robo, right click on database name and drop
 var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoNPR";
 mongoose.connect(MONGODB_URI);
 
-// Add routes file
+// mongoose.connect("mongodb://abshaw:Phantogram1!@ds233806.mlab.com:33806/heroku_cb1xmr7v");
+// var db = mongoose.connection;
+
+// // Show any mongoose errors
+// db.on("error", function(error) {
+//   console.log("Mongoose Error: ", error);
+// });
+
+// // Once logged in to the db through mongoose, log a success message
+// db.once("open", function() {
+//   console.log("Mongoose connection successful.");
+// });
 
 // Routes
 
