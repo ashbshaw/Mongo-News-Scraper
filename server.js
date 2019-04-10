@@ -11,7 +11,7 @@ var cheerio = require("cheerio");
 
 // Require all models
 var db = require("./models");
-var PORT = process.env.port || 3000;
+var PORT = process.env.PORT || 3000;
 
 // Initialize Express
 var app = express();
@@ -34,21 +34,21 @@ app.engine("handlebars", exphbs({
 app.set("view engine", "handlebars");
 
 // Connect to the Mongo DB
-// var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoNPR";
-// mongoose.connect(MONGODB_URI);
+var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoNPR";
+mongoose.connect(MONGODB_URI);
 
-mongoose.connect("mongodb://abshaw:Phantogram1!@ds133556.mlab.com:33556/heroku_m5rd6g4l");
-var db = mongoose.connection;
+// mongoose.connect("mongodb://abshaw:Phantogram1!@ds133556.mlab.com:33556/heroku_m5rd6g4l");
+// var db = mongoose.connection;
 
 // Show any mongoose errors
-db.on("error", function(error) {
-  console.log("Mongoose Error: ", error);
-});
+// db.on("error", function(error) {
+//   console.log("Mongoose Error: ", error);
+// });
 
-// Once logged in to the db through mongoose, log a success message
-db.once("open", function() {
-  console.log("Mongoose connection successful.");
-});
+// // Once logged in to the db through mongoose, log a success message
+// db.once("open", function() {
+//   console.log("Mongoose connection successful.");
+// });
 
 // Routes
 
@@ -227,6 +227,6 @@ app.post("/api/note/:id", function (req, res) {
 //   console.log("App is running on port " + port);
 // });
 // Start the server
-app.listen(process.env.PORT, function () {
+app.listen(PORT, function () {
   console.log("App running on port " + PORT + "!");
 });
