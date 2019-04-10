@@ -223,7 +223,6 @@ app.post("/api/note/:id", function (req, res) {
     });
 });
 
-
 // server.listen(port, function() {
 //   console.log("App is running on port " + port);
 // });
