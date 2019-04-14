@@ -1,7 +1,7 @@
 {{!-- Modal for note pop-up --}}
 {{!-- loop through notes object, append notes to modal using jquery by creating a div under modal body  --}}
 
-<div class="modal" tabindex="-1" role="dialog" id="note-modal">
+<div class="modal" tabindex="-1" role="dialog" id="note-modal" {{this._id}}>
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -14,10 +14,19 @@
       </div>
       <textarea id="note-text" rows="2" cols="100"></textarea>
       <div>
-        <div class="saved-note"></div>
+        {{!-- {{#each this.dbNote}} --}}
+        <div class="saved-note">
+          <div class="panel panel-default">
+            <div class="panel-body">
+              <p class="previousNotes">{{this.body}}</p>
+            </div>
+          </div>
+        </div>
+        {{!-- {{/each}} --}}
+        {{!-- {{else}} --}}
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-outline-dark save-note">Save Note</button>
+        <button type="button" class="btn btn-outline-dark save-note" data-id={{this._id}}>Save Note</button>
         <button type="button" class="btn btn-outline-dark close-note" data-dismiss="modal">Close</button>
       </div>
     </div>
