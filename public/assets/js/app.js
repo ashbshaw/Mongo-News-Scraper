@@ -9,6 +9,7 @@ $.getJSON("/articles", function (data) {
 
 // On click ID scrape articles
 $(document).on("click", "#scrape", function () {
+    event.preventDefault();
     // AJAX call for scraped articles
     $.ajax({
         method: "GET",
